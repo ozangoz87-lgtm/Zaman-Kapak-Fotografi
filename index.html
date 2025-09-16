@@ -79,11 +79,10 @@ let roundNumber=1;
 
 function postVote(data){
     fetch("https://script.google.com/macros/s/AKfycbzAXA0hFZdG-CeKAGe0IwFuKpU8dpcaTdk_zleI0dgkMTecQVz796B3Ni8myzQVE2ioOA/exec", {
-        method: "POST",
+        method:"POST",
         body: JSON.stringify(data)
-    })
-    .then(res => console.log("Final gönderildi:", res))
-    .catch(err => console.error(err));
+    }).then(res=>console.log("Final gönderildi:",res))
+      .catch(err=>console.error(err));
 }
 
 function startTournament(){
@@ -97,26 +96,50 @@ function startTournament(){
     showNextMatch();
 }
 
+function prepareNextRound(){
+    let newRound=[];
+    for(let i=0;i<nextRound.length;i+=2){
+        if(nextRound[i+1]){
+            newRound.push([nextRound[i], nextRound[i+1]]);
+        } else {
+            // Tek kalan fotoğraf otomatik kazanır
+            newRound.push([nextRound[i]]);
+        }
+    }
+    currentRound=newRound;
+    nextRound=[];
+    matchPointer=0;
+    roundNumber++;
+    roundTitle.innerText="Tur "+roundNumber;
+    showNextMatch();
+}
+
 function showNextMatch(){
     if(matchPointer >= currentRound.length){
-        if(nextRound.length === 1){
+        if(nextRound.length===1){
             alert("Turnuva bitti! Kazanan: "+nextRound[0].name);
             postVote({
-                user: usernameInput.value || 'Anon',
+                user: usernameInput.value||'Anon',
                 winner: nextRound[0].name,
                 winnerSrc: nextRound[0].src
             });
             return;
         }
-        currentRound = nextRound;
-        nextRound = [];
-        matchPointer = 0;
-        roundNumber++;
-        roundTitle.innerText = "Tur " + roundNumber;
+        prepareNextRound();
+        return;
     }
-    const pair = currentRound[matchPointer];
-    leftCard.innerHTML = '<img src="'+pair[0].src+'">';
-    rightCard.innerHTML = '<img src="'+pair[1].src+'">';
+    const pair=currentRound[matchPointer];
+    leftCard.innerHTML='<img src="'+pair[0].src+'">';
+    if(pair[1]){
+        rightCard.innerHTML='<img src="'+pair[1].src+'">';
+        rightBtn.style.display='block';
+    } else {
+        // Tek kalan otomatik kazanır
+        nextRound.push(pair[0]);
+        matchPointer++;
+        showNextMatch();
+        return;
+    }
 }
 
 leftBtn.addEventListener('click',()=>{
