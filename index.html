@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="tr">
 <head>
@@ -24,8 +23,6 @@ input{width:100%;padding:6px;border-radius:6px;border:1px solid #475569;backgrou
 <section class="card">
 <label>Kullanıcı Adı</label>
 <input id="username" placeholder="Adınızı girin" />
-<label>İlk Tur Eşleşmeleri</label>
-<div id="matchSetup"></div>
 <button id="startBtn">Turnuvayı Başlat</button>
 </section>
 <section id="tourney" class="card" style="display:none">
@@ -44,7 +41,6 @@ input{width:100%;padding:6px;border-radius:6px;border:1px solid #475569;backgrou
 </section>
 </div>
 <script>
-const matchSetup=document.getElementById('matchSetup');
 const startBtn=document.getElementById('startBtn');
 const tourney=document.getElementById('tourney');
 const roundTitle=document.getElementById('roundTitle');
@@ -54,31 +50,41 @@ const leftBtn=document.getElementById('leftBtn');
 const rightBtn=document.getElementById('rightBtn');
 const usernameInput=document.getElementById('username');
 
-let items=[
-{ name: "Kapak 1", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/1.png" },
-{ name: "Kapak 2", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/2.png" },
-{ name: "Kapak 3", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/3.png" },
-{ name: "Kapak 4", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/4.png" },
-{ name: "Kapak 5", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/5.png" },
-{ name: "Kapak 6", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/6.png" },
-{ name: "Kapak 7", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/7.png" },
-{ name: "Kapak 8", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/8.png" },
-{ name: "Kapak 9", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/9.png" },
-{ name: "Kapak 10", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/10.png" },
-{ name: "Kapak 11", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/11.png" },
-{ name: "Kapak 12", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/12.png" },
-{ name: "Kapak 13", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/13.png" },
-{ name: "Kapak 14", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/14.png" },
-{ name: "Kapak 15", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/15.png" },
-{ name: "Kapak 16", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/16.png" }
+let items = [
+  { name: "Kapak 1", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/1.png" },
+  { name: "Kapak 2", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/2.png" },
+  { name: "Kapak 3", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/3.png" },
+  { name: "Kapak 4", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/4.png" },
+  { name: "Kapak 5", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/5.png" },
+  { name: "Kapak 6", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/6.png" },
+  { name: "Kapak 7", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/7.png" },
+  { name: "Kapak 8", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/8.png" },
+  { name: "Kapak 9", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/9.png" },
+  { name: "Kapak 10", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/10.png" },
+  { name: "Kapak 11", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/11.png" },
+  { name: "Kapak 12", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/12.png" },
+  { name: "Kapak 13", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/13.png" },
+  { name: "Kapak 14", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/14.png" },
+  { name: "Kapak 15", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/15.png" },
+  { name: "Kapak 16", src: "https://raw.githubusercontent.com/ozangoz87-lgtm/Zaman-Kapak-Fotografi/refs/heads/main/16.png" }
 ];
-
 
 let currentRound=[];
 let nextRound=[];
 let matchPointer=0;
 let roundNumber=1;
-let sheetUrl="https://script.google.com/macros/s/AKfycbzAXA0hFZdG-CeKAGe0IwFuKpU8dpcaTdk_zleI0dgkMTecQVz796B3Ni8myzQVE2ioOA/exec";
+
+// Google Sheet URL’nizi buraya ekleyebilirsiniz
+// const sheetUrl="YOUR_GOOGLE_APPS_SCRIPT_URL";
+
+function postVote(data){
+    fetch("https://script.google.com/macros/s/AKfycbzAXA0hFZdG-CeKAGe0IwFuKpU8dpcaTdk_zleI0dgkMTecQVz796B3Ni8myzQVE2ioOA/exec", {
+        method: "POST",
+        body: JSON.stringify(data)
+    })
+    .then(res => console.log("Final gönderildi:", res))
+    .catch(err => console.error(err));
+}
 
 function startTournament(){
     currentRound=[];
@@ -92,40 +98,40 @@ function startTournament(){
 }
 
 function showNextMatch(){
-    if(matchPointer>=currentRound.length){
-        if(nextRound.length===1){
+    if(matchPointer >= currentRound.length){
+        if(nextRound.length === 1){
             alert("Turnuva bitti! Kazanan: "+nextRound[0].name);
-            postVote({user: usernameInput.value || 'Anon', round: roundNumber, match: matchPointer, winner: nextRound[0].name, winnerSrc: nextRound[0].src});
+            postVote({
+                user: usernameInput.value || 'Anon',
+                winner: nextRound[0].name,
+                winnerSrc: nextRound[0].src
+            });
             return;
         }
-        currentRound=nextRound; nextRound=[]; matchPointer=0; roundNumber++;
-        roundTitle.innerText="Tur "+roundNumber;
-        showNextMatch(); // <--- burayı ekle
-    return;
+        currentRound = nextRound;
+        nextRound = [];
+        matchPointer = 0;
+        roundNumber++;
+        roundTitle.innerText = "Tur " + roundNumber;
     }
-    const pair=currentRound[matchPointer];
-    leftCard.innerHTML='<img src="'+pair[0].src+'">';
-    rightCard.innerHTML='<img src="'+pair[1].src+'">';
+    const pair = currentRound[matchPointer];
+    leftCard.innerHTML = '<img src="'+pair[0].src+'">';
+    rightCard.innerHTML = '<img src="'+pair[1].src+'">';
 }
 
 leftBtn.addEventListener('click',()=>{
     nextRound.push(currentRound[matchPointer][0]);
-    postVote({user: usernameInput.value||'Anon', round: roundNumber, match: matchPointer, winner: currentRound[matchPointer][0].name, winnerSrc: currentRound[matchPointer][0].src});
     matchPointer++;
     showNextMatch();
 });
+
 rightBtn.addEventListener('click',()=>{
     nextRound.push(currentRound[matchPointer][1]);
-    postVote({user: usernameInput.value||'Anon', round: roundNumber, match: matchPointer, winner: currentRound[matchPointer][1].name, winnerSrc: currentRound[matchPointer][1].src});
     matchPointer++;
     showNextMatch();
 });
 
 startBtn.addEventListener('click',startTournament);
-
-function postVote(data){
-    fetch(sheetUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(res=>res.json()).then(console.log).catch(console.error);
-}
 </script>
 </body>
 </html>
