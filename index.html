@@ -100,6 +100,8 @@ function showNextMatch(){
         }
         currentRound=nextRound; nextRound=[]; matchPointer=0; roundNumber++;
         roundTitle.innerText="Tur "+roundNumber;
+        showNextMatch(); // <--- burayı ekle
+    return;
     }
     const pair=currentRound[matchPointer];
     leftCard.innerHTML='<img src="'+pair[0].src+'">';
