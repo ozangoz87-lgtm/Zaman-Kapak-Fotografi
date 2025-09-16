@@ -1,0 +1,128 @@
+
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Şarkı Kapak Turnuvası</title>
+<style>
+body{margin:0;font-family:Arial, sans-serif;background:#0f1724;color:#f1f5f9;display:flex;justify-content:center;padding:20px}
+.app{width:100%;max-width:1000px}
+h1{font-size:22px;margin-bottom:12px}
+.card{background:#1e293b;border-radius:12px;padding:16px;margin-bottom:16px}
+.pair{display:flex;gap:16px;align-items:center;margin-top:16px}
+.card-img{flex:1;height:300px;border-radius:10px;overflow:hidden;background:#334155;display:flex;align-items:center;justify-content:center}
+.card-img img{max-width:100%;max-height:100%;object-fit:contain}
+button{background:#0ea5e9;color:#0f172a;font-weight:bold;border:none;border-radius:8px;padding:10px 14px;cursor:pointer}
+.vote-btn{width:100%;padding:10px;margin-top:8px;border-radius:8px;font-weight:700}
+input{width:100%;padding:6px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#f8fafc;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>Şarkı Kapak Turnuvası</h1>
+<section class="card">
+<label>Kullanıcı Adı</label>
+<input id="username" placeholder="Adınızı girin" />
+<label>İlk Tur Eşleşmeleri</label>
+<div id="matchSetup"></div>
+<button id="startBtn">Turnuvayı Başlat</button>
+</section>
+<section id="tourney" class="card" style="display:none">
+<h2 id="roundTitle">Tur 1</h2>
+<div class="pair">
+<div style="flex:1">
+<div class="card-img" id="leftCard"></div>
+<button class="vote-btn" id="leftBtn">Sol’u Seç</button>
+</div>
+<div style="width:20px;text-align:center">VS</div>
+<div style="flex:1">
+<div class="card-img" id="rightCard"></div>
+<button class="vote-btn" id="rightBtn">Sağ’ı Seç</button>
+</div>
+</div>
+</section>
+</div>
+<script>
+const matchSetup=document.getElementById('matchSetup');
+const startBtn=document.getElementById('startBtn');
+const tourney=document.getElementById('tourney');
+const roundTitle=document.getElementById('roundTitle');
+const leftCard=document.getElementById('leftCard');
+const rightCard=document.getElementById('rightCard');
+const leftBtn=document.getElementById('leftBtn');
+const rightBtn=document.getElementById('rightBtn');
+const usernameInput=document.getElementById('username');
+
+let items=[
+{ name: "Kapak 1", src: "https://via.placeholder.com/300?text=Kapak+1" },
+{ name: "Kapak 2", src: "https://via.placeholder.com/300?text=Kapak+2" },
+{ name: "Kapak 3", src: "https://via.placeholder.com/300?text=Kapak+3" },
+{ name: "Kapak 4", src: "https://via.placeholder.com/300?text=Kapak+4" },
+{ name: "Kapak 5", src: "https://via.placeholder.com/300?text=Kapak+5" },
+{ name: "Kapak 6", src: "https://via.placeholder.com/300?text=Kapak+6" },
+{ name: "Kapak 7", src: "https://via.placeholder.com/300?text=Kapak+7" },
+{ name: "Kapak 8", src: "https://via.placeholder.com/300?text=Kapak+8" },
+{ name: "Kapak 9", src: "https://via.placeholder.com/300?text=Kapak+9" },
+{ name: "Kapak 10", src: "https://via.placeholder.com/300?text=Kapak+10" },
+{ name: "Kapak 11", src: "https://via.placeholder.com/300?text=Kapak+11" },
+{ name: "Kapak 12", src: "https://via.placeholder.com/300?text=Kapak+12" },
+{ name: "Kapak 13", src: "https://via.placeholder.com/300?text=Kapak+13" },
+{ name: "Kapak 14", src: "https://via.placeholder.com/300?text=Kapak+14" },
+{ name: "Kapak 15", src: "https://via.placeholder.com/300?text=Kapak+15" },
+{ name: "Kapak 16", src: "https://via.placeholder.com/300?text=Kapak+16" }
+];
+
+let currentRound=[];
+let nextRound=[];
+let matchPointer=0;
+let roundNumber=1;
+let sheetUrl="https://script.google.com/macros/s/AKfycbzAXA0hFZdG-CeKAGe0IwFuKpU8dpcaTdk_zleI0dgkMTecQVz796B3Ni8myzQVE2ioOA/exec";
+
+function startTournament(){
+    currentRound=[];
+    for(let i=0;i<items.length;i+=2){
+        currentRound.push([items[i], items[i+1]]);
+    }
+    matchPointer=0; roundNumber=1;
+    tourney.style.display='block';
+    startBtn.style.display='none';
+    showNextMatch();
+}
+
+function showNextMatch(){
+    if(matchPointer>=currentRound.length){
+        if(nextRound.length===1){
+            alert("Turnuva bitti! Kazanan: "+nextRound[0].name);
+            postVote({user: usernameInput.value || 'Anon', round: roundNumber, match: matchPointer, winner: nextRound[0].name, winnerSrc: nextRound[0].src});
+            return;
+        }
+        currentRound=nextRound; nextRound=[]; matchPointer=0; roundNumber++;
+        roundTitle.innerText="Tur "+roundNumber;
+    }
+    const pair=currentRound[matchPointer];
+    leftCard.innerHTML='<img src="'+pair[0].src+'">';
+    rightCard.innerHTML='<img src="'+pair[1].src+'">';
+}
+
+leftBtn.addEventListener('click',()=>{
+    nextRound.push(currentRound[matchPointer][0]);
+    postVote({user: usernameInput.value||'Anon', round: roundNumber, match: matchPointer, winner: currentRound[matchPointer][0].name, winnerSrc: currentRound[matchPointer][0].src});
+    matchPointer++;
+    showNextMatch();
+});
+rightBtn.addEventListener('click',()=>{
+    nextRound.push(currentRound[matchPointer][1]);
+    postVote({user: usernameInput.value||'Anon', round: roundNumber, match: matchPointer, winner: currentRound[matchPointer][1].name, winnerSrc: currentRound[matchPointer][1].src});
+    matchPointer++;
+    showNextMatch();
+});
+
+startBtn.addEventListener('click',startTournament);
+
+function postVote(data){
+    fetch(sheetUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(res=>res.json()).then(console.log).catch(console.error);
+}
+</script>
+</body>
+</html>
